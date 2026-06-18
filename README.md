@@ -1,1 +1,545 @@
-My first website.
+name=finance-manager.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box h3 {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .stat-box .value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .transactions-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+
+        .transaction-item:hover {
+            background: #f9f9f9;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-info {
+            flex-grow: 1;
+        }
+
+        .transaction-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .transaction-category {
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .income {
+            color: #4caf50;
+        }
+
+        .expense {
+            color: #f44336;
+        }
+
+        .delete-btn {
+            width: auto;
+            padding: 5px 10px;
+            margin-left: 10px;
+            background: #f44336;
+            font-size: 0.85em;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .budget-item {
+            margin-bottom: 15px;
+        }
+
+        .budget-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #45a049);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .progress-fill.warning {
+            background: linear-gradient(90deg, #ff9800, #f57c00);
+        }
+
+        .progress-fill.danger {
+            background: linear-gradient(90deg, #f44336, #da190b);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Finance Manager</h1>
+            <p>Manage your income, expenses, and budget</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat-box">
+                <h3>Total Income</h3>
+                <div class="value" id="totalIncome">$0.00</div>
+            </div>
+            <div class="stat-box">
+                <h3>Total Expenses</h3>
+                <div class="value" id="totalExpenses">$0.00</div>
+            </div>
+            <div class="stat-box">
+                <h3>Net Balance</h3>
+                <div class="value" id="netBalance">$0.00</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Add Transaction Form -->
+            <div class="card">
+                <h2>Add Transaction</h2>
+                <form id="transactionForm">
+                    <div class="form-group">
+                        <label for="transactionType">Type</label>
+                        <select id="transactionType" required>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <input type="text" id="description" placeholder="e.g., Salary, Groceries" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" required>
+                            <option value="">Select a category</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Freelance">Freelance</option>
+                            <option value="Investment">Investment</option>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Amount ($)</label>
+                        <input type="number" id="amount" placeholder="0.00" min="0" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+
+                    <button type="submit">Add Transaction</button>
+                </form>
+            </div>
+
+            <!-- Transactions List -->
+            <div class="card">
+                <h2>Recent Transactions</h2>
+                <div class="transactions-list" id="transactionsList">
+                    <div class="empty-state">
+                        <p>No transactions yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget and Analytics -->
+        <div class="main-content">
+            <!-- Budget Tracker -->
+            <div class="card">
+                <h2>Budget Tracker</h2>
+                <div id="budgetList">
+                    <div class="empty-state">
+                        <p>No budget set yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Breakdown -->
+            <div class="card">
+                <h2>Spending by Category</h2>
+                <div id="categoryBreakdown">
+                    <div class="empty-state">
+                        <p>No transactions to analyze</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize date input with today's date
+        document.getElementById('date').valueAsDate = new Date();
+
+        // Data storage
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let budgets = JSON.parse(localStorage.getItem('budgets')) || {
+            Food: 500,
+            Transport: 200,
+            Entertainment: 300,
+            Utilities: 150
+        };
+
+        // Save transactions to localStorage
+        function saveTransactions() {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+        }
+
+        // Save budgets to localStorage
+        function saveBudgets() {
+            localStorage.setItem('budgets', JSON.stringify(budgets));
+        }
+
+        // Add transaction
+        document.getElementById('transactionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const transaction = {
+                id: Date.now(),
+                type: document.getElementById('transactionType').value,
+                description: document.getElementById('description').value,
+                category: document.getElementById('category').value,
+                amount: parseFloat(document.getElementById('amount').value),
+                date: document.getElementById('date').value
+            };
+
+            transactions.unshift(transaction);
+            saveTransactions();
+            this.reset();
+            document.getElementById('date').valueAsDate = new Date();
+
+            updateUI();
+        });
+
+        // Delete transaction
+        function deleteTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            saveTransactions();
+            updateUI();
+        }
+
+        // Update all UI elements
+        function updateUI() {
+            updateStats();
+            updateTransactionsList();
+            updateCategoryBreakdown();
+            updateBudgetTracker();
+        }
+
+        // Update stats
+        function updateStats() {
+            const income = transactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            const expenses = transactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            const balance = income - expenses;
+
+            document.getElementById('totalIncome').textContent = `$${income.toFixed(2)}`;
+            document.getElementById('totalExpenses').textContent = `$${expenses.toFixed(2)}`;
+            document.getElementById('netBalance').textContent = `$${balance.toFixed(2)}`;
+        }
+
+        // Update transactions list
+        function updateTransactionsList() {
+            const list = document.getElementById('transactionsList');
+
+            if (transactions.length === 0) {
+                list.innerHTML = '<div class="empty-state"><p>No transactions yet</p></div>';
+                return;
+            }
+
+            list.innerHTML = transactions.map(t => `
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-name">${t.description}</div>
+                        <div class="transaction-category">${t.category} • ${t.date}</div>
+                    </div>
+                    <div class="transaction-amount ${t.type}">
+                        ${t.type === 'income' ? '+' : '-'}$${t.amount.toFixed(2)}
+                    </div>
+                    <button class="delete-btn" onclick="deleteTransaction(${t.id})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        // Update category breakdown
+        function updateCategoryBreakdown() {
+            const expenses = transactions.filter(t => t.type === 'expense');
+            const categoryTotals = {};
+
+            expenses.forEach(t => {
+                categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
+            });
+
+            const breakdown = document.getElementById('categoryBreakdown');
+
+            if (Object.keys(categoryTotals).length === 0) {
+                breakdown.innerHTML = '<div class="empty-state"><p>No transactions to analyze</p></div>';
+                return;
+            }
+
+            const totalSpent = Object.values(categoryTotals).reduce((a, b) => a + b, 0);
+
+            breakdown.innerHTML = Object.entries(categoryTotals)
+                .sort((a, b) => b[1] - a[1])
+                .map(([category, amount]) => {
+                    const percentage = (amount / totalSpent) * 100;
+                    return `
+                        <div class="budget-item">
+                            <div class="budget-item-header">
+                                <span>${category}</span>
+                                <span>$${amount.toFixed(2)} (${percentage.toFixed(1)}%)</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        // Update budget tracker
+        function updateBudgetTracker() {
+            const expenses = transactions.filter(t => t.type === 'expense');
+            const categorySpending = {};
+
+            expenses.forEach(t => {
+                categorySpending[t.category] = (categorySpending[t.category] || 0) + t.amount;
+            });
+
+            const budgetList = document.getElementById('budgetList');
+
+            if (Object.keys(budgets).length === 0) {
+                budgetList.innerHTML = '<div class="empty-state"><p>No budget set yet</p></div>';
+                return;
+            }
+
+            budgetList.innerHTML = Object.entries(budgets)
+                .map(([category, budget]) => {
+                    const spent = categorySpending[category] || 0;
+                    const percentage = (spent / budget) * 100;
+                    let fillClass = '';
+
+                    if (percentage > 90) fillClass = 'danger';
+                    else if (percentage > 70) fillClass = 'warning';
+
+                    return `
+                        <div class="budget-item">
+                            <div class="budget-item-header">
+                                <span>${category}</span>
+                                <span>$${spent.toFixed(2)} / $${budget.toFixed(2)}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill ${fillClass}" style="width: ${Math.min(percentage, 100)}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        // Initial UI update
+        updateUI();
+    </script>
+</body>
+</html>
